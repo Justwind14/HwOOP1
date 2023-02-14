@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -42,7 +44,7 @@ public class Main {
         auto1.getInfo();
         auto2.getInfo();
         auto3.getInfo();
-        int way = rand.nextInt(1, 30) * 5000; // длина трассы
+        int way = rand.nextInt(1, 30) * 50; // длина трассы
         System.out.println("Длина трассы равна " + way + " км");
         System.out.println(us1.name + " у вас " + us1.getCredit() + " кредитов. Выберите автомобиль из списка " + Auto.getCollections() + " и ставку на него, через запятую:");
         String[] choiser = scan.next().split(",");
@@ -78,6 +80,8 @@ public class Main {
 
 
     public static void race(int way, Auto somecar1, Auto somecar2, User us1, User us2) {
+        List<Double> rangeCar1 = new ArrayList<>();
+        List<Double> rangeCar2 = new ArrayList<>();
         double v1 = 0; // скорость первой машины
         double v2 = 0; // скорость второй машины
         double s1 = 0; // путь, проделанный первой машиной
@@ -85,18 +89,24 @@ public class Main {
         int money = 0;
         for (int i = 0; i < way; i += 5) {
             if (v1 < somecar1.getSpeed()) {
-                v1 = somecar1.getBoost() * i;
+                v1 = somecar1.getBoost() * i/100;
                 s1 += v1 * i;
+                rangeCar1.add(s1);
+
             } else {
                 s1 += v1 * i;
+                rangeCar2.add(s1);
             }
             if (v2 < somecar2.getSpeed()) {
-                v2 = somecar2.getBoost() * i;
+                v2 = somecar2.getBoost() * i/100;
                 s2 += v2 * i;
+                rangeCar2.add(s2);
             } else {
-                s2 += v2 * i;
-            }
 
+                s2 += v2 * i;
+                rangeCar2.add(s2);
+            }
+            TrakMap.pintrace(rangeCar1,rangeCar2,somecar1.getModel(),somecar2.getModel());
             if (s1 >= way) {
                 money += us1.bet * 2;
                 us1.setCredit(money);
